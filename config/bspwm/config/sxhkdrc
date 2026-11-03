@@ -240,7 +240,11 @@ super + alt + b
 super + alt + c
     OpenApps --clipboard
 
-# Screenshot
+# Screenshot: seleciona a área (Ctrl+C copia, Ctrl+S salva)
+Print
+    flameshot gui
+
+# Screenshot menu (tela inteira, janela, timer)
 super + alt + s
     OpenApps --screenshot
 

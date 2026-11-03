@@ -44,7 +44,7 @@ em `~/.config/bspwm/weather.key` ou na variável `OWM_API_KEY`. Esse arquivo nã
 ## Pacotes principais
 
 `bspwm sxhkd polybar picom eww-git rofi dunst feh alacritty jgmenu xsettingsd clipcat lxsession`
-`i3lock-color imagemagick jq xdo yazi neovim mpd ncmpcpp mpv`
+`i3lock-color imagemagick jq xdo yazi neovim mpd ncmpcpp mpv flameshot`
 
 Tema GTK, ícones e cursor: `gh0stzk-gtk-themes gh0stzk-icons-hack gh0stzk-icons-beautyline gh0stzk-cursor-qogirr`.
 
