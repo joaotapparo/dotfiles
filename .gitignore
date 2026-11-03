@@ -1,0 +1,7 @@
+# Segredos e estado local
+config/bspwm/weather.key
+config/bspwm/config/.first_run_done
+config/bspwm/**/.tmp.*
+config/ncmpcpp/error.log
+config/geany/geany.conf.bak
+config/nvim/lazy-lock.json.bak

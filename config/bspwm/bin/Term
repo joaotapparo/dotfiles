@@ -1,0 +1,13 @@
+#!/bin/sh
+# Abre o Alacritty nos modos usados pelo OpenApps.
+
+case $1 in
+    "--terminal") alacritty ;;
+    "--floating") alacritty --class FloaTerm,FloaTerm ;;
+    "--checkupdates") alacritty -o window.opacity=0.93 --class Updating,Updating -e Updates --print-updates ;;
+    "--yazi") alacritty --class FloaTerm,YaziTerm -e yazi ;;
+    "--nvim") alacritty -e nvim ;;
+    "--music") alacritty --class FloaTerm,MusicTerm -e ncmpcpp ;;
+    "--fetch") alacritty --class FloaTerm,FetchTerm -e ~/.local/bin/sysfetch ;;
+    *) alacritty ;;
+esac

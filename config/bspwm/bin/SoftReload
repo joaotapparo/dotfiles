@@ -1,0 +1,48 @@
+#!/bin/sh
+# =============================================================
+# SoftReload - Dynamic reloading of graphical components
+# Features:
+#   ✔ Reload POLYBAR.
+#   ✔ Reload PICOM, XSETTINGSD, SXHKD, DUNST daemons and its configurations.
+#   ✔ Restart the Eww daemon if it is active
+#   ✔ Sends a notification that the configuration has been successfully reloaded.
+#
+# =============================================================
+
+CONFIG_DIR="$HOME/.config/bspwm"
+main_eww="$CONFIG_DIR/eww"
+reloaded=""
+
+# Reload polybar
+polybar-msg cmd restart >/dev/null 2>&1 &&
+reloaded="${reloaded}• Polybar\n"
+
+# Reload Dunst notification daemon
+dunstctl reload 2>/dev/null &&
+reloaded="${reloaded}• Dunst\n"
+
+# Reload Picom compositor daemon
+pkill -USR1 -x picom 2>/dev/null &&
+reloaded="${reloaded}• Picom\n"
+
+# Reload xsettingsd (gtk themes) daemon
+pkill -1 xsettingsd 2>/dev/null &&
+reloaded="${reloaded}• Gtk Colors\n"
+
+# Reload sxhkd hotkey daemon
+pkill -USR1 -x sxhkd 2>/dev/null &&
+reloaded="${reloaded}• SXHKD\n"
+
+# Reload EWW widgets
+if eww ping -c "$main_eww" >/dev/null; then
+    eww reload -c "$main_eww" &&
+    reloaded="${reloaded}• Eww Widgets\n"
+fi
+
+# Send notification
+if [ -n "$reloaded" ]; then
+    dunstify \
+        -i dialog-information \
+        "Environment Reloaded!" \
+        "$reloaded"
+fi
