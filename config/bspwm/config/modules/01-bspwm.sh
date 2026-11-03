@@ -1,5 +1,6 @@
 #!/bin/sh
 
+bspc config window_gap ${WINDOW_GAP}
 bspc config border_width ${BORDER_WIDTH}
 bspc config top_padding ${TOP_PADDING}
 bspc config bottom_padding ${BOTTOM_PADDING}

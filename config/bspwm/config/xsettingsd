@@ -1,5 +1,5 @@
-Net/ThemeName "TokyoNight-zk"
-Net/IconThemeName "Papirus-Dark"
+Net/ThemeName "NavyRed"
+Net/IconThemeName "Papirus-Dark-red"
 Gtk/CursorThemeName "Qogirr-Dark"
 Gtk/DecorationLayout ":"
 Xft/Hinting 1

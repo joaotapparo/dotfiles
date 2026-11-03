@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""Recolore um tema GTK (CSS + SVG) para a paleta do theme.bash.
+
+Uso: gtk-recolor <tema_base_dir> <destino_dir> <nome> <accent> <bg> <fg>
+
+Cada cor do tema base é classificada por família (HSL) e levada para a paleta:
+  - azuis vivos (destaque)  -> accent, preservando a variação de luminosidade
+  - azuis/escuros de fundo   -> bg (azul-marinho), preservando a variação
+  - textos claros azulados   -> fg
+  - rosas                    -> tom avermelhado
+Outras cores (verde, cinza, branco, preto, vermelho puro) não mudam.
+"""
+import colorsys
+import os
+import re
+import shutil
+import sys
+
+base, dest, name, accent, bg, fg = sys.argv[1:7]
+
+
+def hex_to_hls(h):
+    h = h.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    return colorsys.rgb_to_hls(r, g, b)
+
+
+def hls_to_rgb255(h, l, s):
+    r, g, b = colorsys.hls_to_rgb(h, max(0.0, min(1.0, l)), max(0.0, min(1.0, s)))
+    return round(r * 255), round(g * 255), round(b * 255)
+
+
+A_H, A_L, A_S = hex_to_hls(accent)
+B_H, B_L, B_S = hex_to_hls(bg)
+F_H, F_L, F_S = hex_to_hls(fg)
+# Reference points of the base theme (TokyoNight-like): accent L~0.72, bg L~0.125
+REF_ACCENT_L, REF_BG_L = 0.72, 0.125
+
+
+def transform(r, g, b):
+    h, l, s = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+    deg = h * 360
+    if 195 <= deg <= 265 and s > 0.08:
+        if l < 0.30:  # backgrounds, borders, shadows
+            return hls_to_rgb255(B_H, B_L + (l - REF_BG_L) * 0.95, min(1.0, B_S * (0.81 + s)))
+        if s >= 0.6 and l <= 0.85:  # accent and its hover/pressed shades
+            return hls_to_rgb255(A_H, A_L + (l - REF_ACCENT_L) * 0.9, A_S)
+        if l > 0.6:  # light text
+            return hls_to_rgb255(F_H, F_L + (l - 0.86) * 0.8, F_S * min(1.0, s + 0.2))
+        return hls_to_rgb255(B_H, l, s * 0.8)  # muted mid blues
+    if 290 <= deg <= 340 and s > 0.3:  # pinks -> reddish pink
+        return hls_to_rgb255(A_H + 0.01, l, s)
+    return r, g, b
+
+
+HEX = re.compile(r"#([0-9a-fA-F]{6})\b")
+RGBA = re.compile(r"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)")
+
+
+def recolor(text):
+    text = HEX.sub(lambda m: "#%02x%02x%02x" % transform(*(int(m.group(1)[i:i + 2], 16) for i in (0, 2, 4))), text)
+    return RGBA.sub(
+        lambda m: m.group(0)[: m.group(0).index("(") + 1] + "%d, %d, %d" % transform(*(int(m.group(i)) for i in (1, 2, 3))),
+        text,
+    )
+
+
+tmp = dest + ".tmp"
+shutil.rmtree(tmp, ignore_errors=True)
+shutil.copytree(base, tmp, symlinks=True, ignore=shutil.ignore_patterns("*.gresource", "*.gresource.xml"))
+
+# gtk-3.20/gtk.css imports a compiled gresource; point it to the plain CSS copy instead
+g3 = os.path.join(tmp, "gtk-3.20")
+for css in ("gtk.css", "gtk-dark.css"):
+    if os.path.exists(os.path.join(g3, "dist", css)):
+        with open(os.path.join(g3, css), "w") as f:
+            f.write('@import url("dist/%s");\n' % css)
+
+for root, _, files in os.walk(tmp):
+    for fn in files:
+        if not fn.endswith((".css", ".svg", "gtkrc")):
+            continue
+        p = os.path.join(root, fn)
+        if os.path.islink(p):
+            continue
+        with open(p, encoding="utf-8", errors="surrogateescape") as f:
+            s = f.read()
+        with open(p, "w", encoding="utf-8", errors="surrogateescape") as f:
+            f.write(recolor(s))
+
+# Light text on top of the accent color (selections, suggested buttons)
+override = """
+/* gtk-recolor: texto claro sobre o destaque */
+@define-color theme_selected_fg_color %(fg)s;
+@define-color selected_fg_color %(fg)s;
+*:selected, *:selected label, *:selected image,
+row:selected, row:selected label, row:selected image,
+placessidebar row:selected, placessidebar row:selected label, placessidebar row:selected image,
+placessidebar row:backdrop:selected, placessidebar row:selected:active,
+treeview.view:selected, iconview:selected, .sidebar .view:selected,
+.view:selected, .view text selection, entry selection, textview text selection,
+button.suggested-action, button.suggested-action label,
+button.destructive-action, button.destructive-action label,
+menuitem:hover, menuitem:hover label, menuitem:hover accelerator {
+    color: %(fg)s;
+}
+""" % {"fg": fg}
+for css in ("gtk.css", "gtk-dark.css"):
+    p = os.path.join(g3, "dist", css)
+    if os.path.exists(p):
+        with open(p, "a") as f:
+            f.write(override)
+
+idx = os.path.join(tmp, "index.theme")
+with open(idx, "w") as f:
+    f.write(
+        "[Desktop Entry]\nType=X-GNOME-Metatheme\nName=%s\nComment=Gerado a partir de %s\nEncoding=UTF-8\n\n"
+        "[X-GNOME-Metatheme]\nName=%s\nGtkTheme=%s\n" % (name, os.path.basename(base.rstrip("/")), name, name)
+    )
+
+shutil.rmtree(dest, ignore_errors=True)
+os.rename(tmp, dest)

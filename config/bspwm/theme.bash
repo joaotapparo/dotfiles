@@ -44,6 +44,7 @@ arch_icon="$accent"
 
 
 # Bspwm options
+WINDOW_GAP="12"		# Space between windows
 BORDER_WIDTH="2"		# Bspwm border
 TOP_PADDING="1"
 BOTTOM_PADDING="1"
@@ -61,15 +62,15 @@ P_FADE="false"			# Fade true|false
 P_SHADOWS="true"		# Shadows true|false
 SHADOW_C="#000000"		# Shadow color
 P_CORNER_R="6"			# Corner radius (0 = disabled)
-P_BLUR="false"			# Blur true|false
-P_ANIMATIONS="#"		# (@ = enable) (# = disable)
-P_TERM_OPACITY="1.0"	# Terminal transparency. Range: 0.1 - 1.0 (1.0 = disabled)
+P_BLUR="true"			# Blur true|false
+P_ANIMATIONS="@"		# (@ = enable) (# = disable)
+P_TERM_OPACITY="0.92"	# Terminal transparency. Range: 0.1 - 1.0 (1.0 = disabled)
 
 # Dunst
 dunst_offset='(0, 60)'
 dunst_origin='top-center'
 dunst_transparency='0'
-dunst_corner_radius='0'
+dunst_corner_radius='6'
 dunst_font='JetBrainsMono NF Medium 9'
 dunst_border='2'
 dunst_frame_color="$accent"
@@ -106,8 +107,9 @@ sl_date="${fg}"
 sl_verify="${accent_alt}"
 
 # Gtk theme
-gtk_theme="TokyoNight-zk"
-gtk_icons="Papirus-Dark"
+gtk_theme="NavyRed"
+gtk_theme_base="TokyoNight-zk"	# tema recolorido com as cores acima
+gtk_icons="Papirus-Dark-red"
 gtk_cursor="Qogirr-Dark"
 
 # Wallpaper engine
