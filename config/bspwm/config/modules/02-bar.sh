@@ -7,6 +7,8 @@ bg = ${bg_alpha:-$bg}
 bg-alt = $bg_alt
 fg = $fg
 pill = $accent_color
+accent = $accent
+accent-alt = $accent_alt
 trans = $trans
 
 black = $black

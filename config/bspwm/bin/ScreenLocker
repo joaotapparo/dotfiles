@@ -15,12 +15,12 @@ TEMP_IMAGE="/tmp/i3lock.jpg"
 TEMP_LAYOUT="/tmp/lockerpreviouskeymap"
 
 # Colors
-bg=#0c1018
-fg=#76EA00
-ring=#0c1018
-wrong=#6DDE00
-date=#76EA00
-verify=#76EA00
+bg=#0b1530
+fg=#e8ecf5
+ring=#e4002b
+wrong=#e4002b
+date=#e8ecf5
+verify=#ffc72c
 
 save_current_keymap() {
     setxkbmap -query | grep "layout: " | awk '{print $2}' > "$TEMP_LAYOUT"

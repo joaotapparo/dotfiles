@@ -16,7 +16,7 @@ frame_color = "${dunst_frame_color}"
 font = ${dunst_font}
 icon_theme = "${dunst_icon_theme}, Adwaita""
 
-format = "<span size='xx-large' font_desc='Cantarell 9' weight='bold' foreground='${blue}'>%s</span>\n%b"
+format = "<span size='xx-large' font_desc='Cantarell 9' weight='bold' foreground='${accent}'>%s</span>\n%b"
 
 [urgency_low]
 timeout = 3
