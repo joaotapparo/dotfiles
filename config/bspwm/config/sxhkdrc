@@ -26,7 +26,7 @@ super + @space
 # -- BSPWM CONTROL -- #
 
 # Close Window
-super + x
+super + q
     bspc node -c
 
 # Reload BSPWM
@@ -48,7 +48,7 @@ ctrl + super + alt + s
 # -- Window states and flags -- #
 
 # Kill Window
-super + shift + x
+super + shift + q
     bspc node -k
 
 # Set Window State: Tiled Mode

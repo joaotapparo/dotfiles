@@ -59,7 +59,7 @@
     (box :class "welcome-list" :orientation "v" :space-evenly "false" :spacing 8
       (shortcut-item :key "Alt + F1" :desc "Shortcuts Help")
       (shortcut-item :key "Super + Enter" :desc "Open a terminal")
-      (shortcut-item :key "Super + x" :desc "To close windows/apps")
+      (shortcut-item :key "Super + q" :desc "To close windows/apps")
       (shortcut-item :key "Super + Space bar" :desc "Open apps menu")
       (shortcut-item :key "Super + arrows" :desc "Move between workspaces (there are *6)")
       (shortcut-item :key "Super + b" :desc "Browser")
